@@ -39,6 +39,7 @@ public class SpikeEntity : MonoBehaviour
     float time;
     float durationTime;
     GameObject player;
+    bool isHit;
 
     public void Awake()
     {
@@ -47,6 +48,50 @@ public class SpikeEntity : MonoBehaviour
         color = sr.color;
         size = transform.localScale;
         player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    public void Ctor(CycleState state)
+    {
+        switch (state)
+        {
+            case CycleState.Teach:
+                moveSpeed = 2;
+                isTrack = false;
+                ctorTime = 3f;
+                damage = 5;
+                lifeTime = 10;
+                break;
+            case CycleState.Easy:
+                moveSpeed = 2;
+                isTrack = false;
+                ctorTime = 3f;
+                damage = 5;
+                lifeTime = 10;
+                break;
+            case CycleState.Normal:
+                moveSpeed = 3;
+                isTrack = false;
+                ctorTime = 2f;
+                damage = 8;
+                lifeTime = 5;
+                break;
+            case CycleState.Hard:
+                moveSpeed = 4;
+                isTrack = true;
+                ctorTime = 1.5f;
+                damage = 10;
+                lifeTime = 5;
+                break;
+            case CycleState.Hell:
+                moveSpeed = 5;
+                isTrack = true;
+                ctorTime = 1f;
+                damage = 10;
+                lifeTime = 5;
+                break;
+            default:
+                break;
+        }
         ApplyState(SpikeState.Activate);
     }
 
@@ -164,6 +209,7 @@ public class SpikeEntity : MonoBehaviour
             isEnter = false;
             //Set Spd
             rb.velocity = Vector2.zero;
+            if (!isHit) GameController.Instance.AddEvadeCount();
             Destroy(this.gameObject);
             return;
         }
@@ -177,13 +223,14 @@ public class SpikeEntity : MonoBehaviour
     // Trigger
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (state != SpikeState.Normal) return;
+        if (state != SpikeState.Normal || !other.CompareTag("Player")) return;
         if (other.CompareTag("Player"))
         {
             var hitDir = (other.transform.position - transform.position).normalized;
             var role = other.GetComponent<RoleEntity>();
             role.Behit(damage, hitDir);
         }
+        isHit = true;
         ApplyState(SpikeState.Dead);
     }
 }

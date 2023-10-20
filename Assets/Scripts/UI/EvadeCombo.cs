@@ -19,8 +19,8 @@ public class EvadeCombo : MonoBehaviour
     public Text stateText;
 
     bool isEnter;
-    int evadeCount;
-    int evadeComboCount;
+    public int evadeCount;
+    public int evadeComboCount;
     int rewardComboCount;
     int levelCount;
 
@@ -103,6 +103,30 @@ public class EvadeCombo : MonoBehaviour
         }
     }
 
+    public void UpdateTxt()
+    {
+        switch (state)
+        {
+            case EvadeLevel.Beginner:
+                stateText.text = $"破烂补给包({evadeCount}/{rewardComboCount})";
+                break;
+            case EvadeLevel.Novice:
+                stateText.text = $"小补给包({evadeCount}/{rewardComboCount})";
+                break;
+            case EvadeLevel.Intermediate:
+                stateText.text = $"中补给包({evadeCount}/{rewardComboCount})";
+                break;
+            case EvadeLevel.Expert:
+                stateText.text = $"大补给包({evadeCount}/{rewardComboCount})";
+                break;
+            case EvadeLevel.Master:
+                stateText.text = $"豪华补给包({evadeCount}/{rewardComboCount})";
+                break;
+        }
+
+        progressBar.fillAmount = evadeCount / rewardComboCount;
+    }
+
     void _Tick_Teach(float dt)
     {
         if (isEnter)
@@ -111,6 +135,7 @@ public class EvadeCombo : MonoBehaviour
             levelCount = 9;
             rewardComboCount = 3;
             stateText.text = $"破烂补给包({evadeCount}/{rewardComboCount})";
+            return;
         }
 
         if (evadeCount < rewardComboCount)
@@ -120,7 +145,9 @@ public class EvadeCombo : MonoBehaviour
         else
         {
             evadeCount -= rewardComboCount;
+            UpdateTxt();
             //生成奖励包
+            GameController.Instance.supplyFactory.SpawnSupply(EvadeLevel.Beginner);
         }
 
         if (evadeComboCount >= levelCount)
@@ -147,7 +174,9 @@ public class EvadeCombo : MonoBehaviour
         else
         {
             evadeCount -= rewardComboCount;
+            UpdateTxt();
             //生成奖励包
+            GameController.Instance.supplyFactory.SpawnSupply(EvadeLevel.Novice);
         }
 
         if (evadeComboCount >= levelCount)
@@ -174,7 +203,9 @@ public class EvadeCombo : MonoBehaviour
         else
         {
             evadeCount -= rewardComboCount;
+            UpdateTxt();
             //生成奖励包
+            GameController.Instance.supplyFactory.SpawnSupply(EvadeLevel.Intermediate);
         }
 
         if (evadeComboCount >= levelCount)
@@ -200,7 +231,9 @@ public class EvadeCombo : MonoBehaviour
         else
         {
             evadeCount -= rewardComboCount;
+            UpdateTxt();
             //生成奖励包
+            GameController.Instance.supplyFactory.SpawnSupply(EvadeLevel.Expert);
         }
 
         if (evadeComboCount >= levelCount)
@@ -225,7 +258,9 @@ public class EvadeCombo : MonoBehaviour
         else
         {
             evadeCount -= rewardComboCount;
+            UpdateTxt();
             //生成奖励包
+            GameController.Instance.supplyFactory.SpawnSupply(EvadeLevel.Master);
         }
     }
 

@@ -48,6 +48,16 @@ public class RandomSupplyEntity : MonoBehaviour
         ApplyState(RandomSupplyState.Activate);
     }
 
+    public void Ctor(EvadeLevel level)
+    {
+        int lv = (int)level * 2;
+        this.level = lv;
+        this.transform.localScale = size + new Vector2(lv * 0.1f, lv * 0.1f);
+        var x = Random.Range(-5,5);
+        float y = 4.75f;
+        this.transform.position = new Vector3(x, y, 0);
+    }
+
     public void ApplyState(RandomSupplyState state)
     {
         this.state = state;

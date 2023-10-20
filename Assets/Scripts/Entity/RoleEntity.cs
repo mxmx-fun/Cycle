@@ -162,6 +162,7 @@ public class RoleEntity : MonoBehaviour
                     hp += shield;
                     shield = 0;
                 }
+                UpdateTxt();
                 return false;
             }
             else

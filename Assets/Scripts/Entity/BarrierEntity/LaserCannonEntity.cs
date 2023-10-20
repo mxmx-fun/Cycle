@@ -55,6 +55,39 @@ public class LaserCannonEntity : MonoBehaviour
         imgTF = transform.Find("Img");
         activateY = 20;
         originalSize = imgTF.localScale;
+    }
+
+    public void Ctor(CycleState state)
+    {
+        switch (state)
+        {
+            case CycleState.Normal:
+                isMove = false;
+                moveSpeed = 0.5f;
+                isTrack = false;
+                ctorTime = 3f;
+                damage = 5;
+                lifeTime = 5;
+                break;
+            case CycleState.Hard:
+                isMove = true;
+                moveSpeed = 0.7f;
+                isTrack = true;
+                ctorTime = 3f;
+                damage = 5;
+                lifeTime = 5;
+                break;
+            case CycleState.Hell:
+                isMove = true;
+                moveSpeed = 1f;
+                isTrack = true;
+                ctorTime = 3f;
+                damage = 5;
+                lifeTime = 5;
+                break;
+            default:
+                break;
+        }
         ApplyState(LaserCannonState.Activate);
     }
 
@@ -184,6 +217,7 @@ public class LaserCannonEntity : MonoBehaviour
             isEnter = false;
             //Set Spd
             rb.velocity = Vector2.zero;
+            GameController.Instance.AddEvadeCount();
             Destroy(this.gameObject);
             return;
         }

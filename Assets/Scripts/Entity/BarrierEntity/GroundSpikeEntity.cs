@@ -34,7 +34,7 @@ public class GroundSpikeEntity : MonoBehaviour
     Vector2 moveDir;
     public bool isTrack;
     public float trackCD;
-    
+
 
     //FSM
     bool isEnter;
@@ -52,6 +52,29 @@ public class GroundSpikeEntity : MonoBehaviour
         color = sr.color;
         size = transform.localScale;
         player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    public void Ctor(CycleState state)
+    {
+        switch (state)
+        {
+            case CycleState.Hard:
+                ctorTime = 2f;
+                damage = 5;
+                lifeTime = 2;
+                showSpd = 5;
+                hideSpd = 5;
+                break;
+            case CycleState.Hell:
+                ctorTime = 1f;
+                damage = 5;
+                lifeTime = 1;
+                showSpd = 8;
+                hideSpd = 8;
+                break;
+            default:
+                break;
+        }
         ApplyState(GroundSpikeState.Activate);
     }
 
@@ -148,7 +171,7 @@ public class GroundSpikeEntity : MonoBehaviour
         }
         if (time < durationTime)
         {
-            if(transform.position.y > activateY)
+            if (transform.position.y > activateY)
             {
                 transform.position = new Vector2(transform.position.x, activateY);
             }
@@ -175,6 +198,7 @@ public class GroundSpikeEntity : MonoBehaviour
 
         if (transform.position.y <= groundY)
         {
+            GameController.Instance.AddEvadeCount();
             Destroy(this.gameObject);
             return;
         }
