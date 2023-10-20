@@ -9,11 +9,14 @@ public class RoleEntity : MonoBehaviour
 
     //Attri
     public int hp;
+    public Vector2 size;
 
 
     //Ability
     // * Move
     public float moveSpeed;
+
+    public Vector2 moveXRange;
 
     // * Jump
     bool inGround;
@@ -31,6 +34,8 @@ public class RoleEntity : MonoBehaviour
         maxJumpTime = 1;
         jumpForce = 5;
         jumpTime = maxJumpTime;
+        moveXRange = new Vector2(-9.7F, 9.7F);
+        size = transform.localScale;
     }
 
     public void Jump()
@@ -44,12 +49,39 @@ public class RoleEntity : MonoBehaviour
 
     public void Move(Vector2 dir)
     {
-        rb.velocity = dir * moveSpeed + new Vector2(0, rb.velocity.y);
+        if (CheckMove(out var fixPos))
+        {
+            rb.velocity = dir * moveSpeed + new Vector2(0, rb.velocity.y);
+        }
+        else
+        {
+            Debug.Log("LimitMove");
+            transform.position = fixPos;
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
     }
 
+    bool CheckMove(out Vector2 fixPos)
+    {
+        var pos = transform.position;
+        var scale = size.x / 2;
+        if(pos.x - scale < moveXRange.x) {
+            fixPos = new Vector2(moveXRange.x + scale, pos.y);
+            return false;
+        } 
+
+        if(pos.x + scale > moveXRange.y) {
+            fixPos = new Vector2(moveXRange.y - scale, pos.y);
+            return false;
+        }
+
+        fixPos = Vector2.zero;
+        return true;
+    }
+
+    //Collision
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("OnCollisionEnter2D");
         if (collision.gameObject.tag == "Ground")
         {
             inGround = true;
@@ -59,7 +91,6 @@ public class RoleEntity : MonoBehaviour
 
     public void OnCollisionExit2D(Collision2D collision)
     {
-        Debug.Log("OnCollisionExit2D");
         if (collision.gameObject.tag == "Ground")
         {
             inGround = false;
