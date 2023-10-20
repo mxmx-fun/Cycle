@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     public GameObject supplyPrefab;
 
     public EvadeCombo evade;
+    public Cycle cycle;
 
     public BarrierFactory barrierFactory;
     public SupplyFactory supplyFactory;
@@ -23,6 +24,10 @@ public class GameController : MonoBehaviour
     }
 
     public void Start() {
+        spikePrefab = Resources.Load<GameObject>("Prefab/Barrier/Spike");
+        LaserCannonPrefab = Resources.Load<GameObject>("Prefab/Barrier/LaserCannon");
+        groundSpikePrefab = Resources.Load<GameObject>("Prefab/Barrier/GroundSpike");
+        supplyPrefab = Resources.Load<GameObject>("Prefab/Supply/RandomItem");
         barrierFactory = new BarrierFactory(spikePrefab, LaserCannonPrefab, groundSpikePrefab);
         supplyFactory = new SupplyFactory(supplyPrefab);
     }
