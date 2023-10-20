@@ -175,7 +175,7 @@ public class GroundSpikeEntity : MonoBehaviour
 
         if (transform.position.y <= groundY)
         {
-            this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
             return;
         }
     }
@@ -191,9 +191,12 @@ public class GroundSpikeEntity : MonoBehaviour
         if (state == GroundSpikeState.Activate) return;
         if (other.CompareTag("Player") && damageCD <= 0)
         {
+            var hitDir = (other.transform.position - transform.position).normalized;
             var role = other.GetComponent<RoleEntity>();
-            role.Behit(damage);
-            damageCD = 0.5f;
+            if (role.Behit(damage, hitDir))
+            {
+                damageCD = 0.5f;
+            }
         }
     }
 }

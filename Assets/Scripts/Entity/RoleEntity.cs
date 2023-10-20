@@ -1,15 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
+public enum RoleState
+{
+    DeActivate,
+    Normal,
+    Behit,
+    Stun,
+    Dead
+}
 
 public class RoleEntity : MonoBehaviour
 {
     //Component
-    public Rigidbody2D rb;
+    Rigidbody2D rb;
+    Text roleTxt;
+    SpriteRenderer sr;
 
     //Attri
     public int hp;
-    public Vector2 size;
+    public int maxHp;
+    public int shield;
+    public int maxShield;
+    public RoleState state;
+    Vector2 size;
+    public bool isInvincible;
 
 
     //Ability
@@ -20,29 +37,80 @@ public class RoleEntity : MonoBehaviour
 
     // * Jump
     bool inGround;
-    public int jumpTime;
+    int jumpTime;
     public int maxJumpTime;
-    public float jumpForce;
+    float jumpForce;
+
+    // FSM
+    bool isEnter = false;
+
+    // TEMP
+    float time;
+    float durationTime;
 
 
     //Init
     public void Awake()
     {
+        roleTxt = GetComponentInChildren<Text>();
         rb = GetComponentInChildren<Rigidbody2D>();
-        hp = 100;
+        sr = GetComponentInChildren<SpriteRenderer>();
+        maxHp = 100;
+        maxShield = maxHp;
+        shield = 0;
+        hp = maxHp;
         moveSpeed = 5;
-        maxJumpTime = 1;
         jumpForce = 5;
         jumpTime = maxJumpTime;
         moveXRange = new Vector2(-9.7F, 9.7F);
         size = transform.localScale;
+        ApplyState(RoleState.Normal);
     }
 
+    public void ApplyState(RoleState state)
+    {
+        switch (state)
+        {
+            case RoleState.Normal:
+                EnterNormal();
+                break;
+            case RoleState.Behit:
+                EnterBehit();
+                break;
+            case RoleState.Stun:
+                EnterStun();
+                break;
+            case RoleState.Dead:
+                EnterDead();
+                break;
+        }
+    }
+
+    public void Apply_Tick(float dt)
+    {
+        switch (state)
+        {
+            case RoleState.Normal:
+                _Tick_Normal(dt);
+                break;
+            case RoleState.Behit:
+                _Tick_Behit(dt);
+                break;
+            case RoleState.Stun:
+                _Tick_Stun(dt);
+                break;
+            case RoleState.Dead:
+                _Tick_Dead(dt);
+                break;
+        }
+    }
+
+    #region RoleAction
     public void Jump()
     {
         if (jumpTime > 0)
         {
-            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + jumpForce);
             jumpTime--;
         }
     }
@@ -64,12 +132,14 @@ public class RoleEntity : MonoBehaviour
     {
         var pos = transform.position;
         var scale = size.x / 2;
-        if(pos.x - scale < moveXRange.x) {
+        if (pos.x - scale < moveXRange.x)
+        {
             fixPos = new Vector2(moveXRange.x + scale, pos.y);
             return false;
-        } 
+        }
 
-        if(pos.x + scale > moveXRange.y) {
+        if (pos.x + scale > moveXRange.y)
+        {
             fixPos = new Vector2(moveXRange.y - scale, pos.y);
             return false;
         }
@@ -78,6 +148,157 @@ public class RoleEntity : MonoBehaviour
         return true;
     }
 
+    public bool Behit(int damage, Vector3 behitDir)
+    {
+        if (isInvincible) return false;
+        //shield
+        if (shield > 0)
+        {
+            if (shield >= damage)
+            {
+                shield -= damage;
+                if (shield < 0)
+                {
+                    hp += shield;
+                    shield = 0;
+                }
+                return false;
+            }
+            else
+            {
+                damage -= shield;
+                shield = 0;
+            }
+        }
+
+        //hp
+        hp -= damage;
+        rb.velocity = behitDir * 5;
+
+        if (hp <= 0)
+        {
+            hp = 0;
+            ApplyState(RoleState.Dead);
+            return true;
+        }
+
+        if (state != RoleState.Stun)
+        {
+            ApplyState(RoleState.Behit);
+        }
+        return true;
+    }
+    #endregion
+
+    #region RoleFSM
+    public void EnterNormal()
+    {
+        if (state == RoleState.Normal) return;
+        state = RoleState.Normal;
+        UpdateTxt();
+        UpdateColor();
+        isEnter = true;
+    }
+
+    public void EnterBehit()
+    {
+        if (state == RoleState.Behit) return;
+        state = RoleState.Behit;
+        UpdateTxt();
+        UpdateColor();
+        isEnter = true;
+    }
+
+    public void EnterStun()
+    {
+        if (state == RoleState.Stun) return;
+        state = RoleState.Stun;
+        roleTxt.text = "Stun";
+        sr.color = Color.grey;
+        isEnter = true;
+    }
+
+    public void EnterDead()
+    {
+        if (state == RoleState.Dead) return;
+        UpdateTxt();
+        state = RoleState.Dead;
+        isEnter = true;
+    }
+
+    void _Tick_Normal(float dt)
+    {
+        if (isEnter)
+        {
+            isEnter = false;
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            Move(Vector2.left);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            Move(Vector2.right);
+        }
+        else
+        {
+            Move(Vector2.zero);
+        }
+    }
+
+    void _Tick_Behit(float dt)
+    {
+        if (isEnter)
+        {
+            time = 0;
+            durationTime = 0.5F;
+            isEnter = false;
+        }
+        if (time < durationTime)
+        {
+            time += dt;
+            return;
+        }
+        else
+        {
+            ApplyState(RoleState.Normal);
+        }
+    }
+
+    void _Tick_Stun(float dt)
+    {
+        if (isEnter)
+        {
+            time = 0;
+            durationTime = 1F;
+            isEnter = false;
+        }
+
+        if (time < durationTime)
+        {
+            time += dt;
+            return;
+        }
+        else
+        {
+            ApplyState(RoleState.Normal);
+        }
+    }
+
+    void _Tick_Dead(float dt)
+    {
+        if (isEnter)
+        {
+            isEnter = false;
+        }
+
+    }
+    #endregion
     //Collision
     public void OnCollisionEnter2D(Collision2D collision)
     {
@@ -98,31 +319,44 @@ public class RoleEntity : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        Apply_Tick(Time.deltaTime);
+    }
+
+    public void UpdateColor()
+    {
+        if (shield > 0)
         {
-            Jump();
+            sr.color = Color.blue;
+            return;
         }
 
-        if (Input.GetKey(KeyCode.A))
+        var lifePercent = (float)hp / (float)maxHp;
+        if (lifePercent > 0.8F)
         {
-            Move(Vector2.left);
+            sr.color = Color.green;
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (lifePercent > 0.3F)
         {
-            Move(Vector2.right);
+            sr.color = Color.yellow;
         }
         else
         {
-            Move(Vector2.zero);
+            sr.color = Color.red;
         }
     }
 
-    public void Behit(int damage)
+    public void UpdateTxt()
     {
-        hp -= damage;
-        if (hp <= 0)
+        if(state == RoleState.Stun) return;
+
+        if (shield > 0)
         {
-            hp = 0;
+            roleTxt.text = shield.ToString();
         }
+        else
+        {
+            roleTxt.text = hp.ToString();
+        }
+
     }
 }

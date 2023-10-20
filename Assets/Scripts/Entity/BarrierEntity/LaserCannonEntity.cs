@@ -155,7 +155,7 @@ public class LaserCannonEntity : MonoBehaviour
             {
                 if (isTrack)
                 {
-                    var targetPos = new Vector3(player.transform.position.x,transform.position.y,transform.position.z);
+                    var targetPos = new Vector3(player.transform.position.x, transform.position.y, transform.position.z);
                     //TODO：追踪慢慢变快，慢慢旋转
                     moveDir = (targetPos - transform.position).normalized;
                     rb.velocity = moveDir * moveSpeed;
@@ -184,7 +184,7 @@ public class LaserCannonEntity : MonoBehaviour
             isEnter = false;
             //Set Spd
             rb.velocity = Vector2.zero;
-            this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
             return;
         }
     }
@@ -200,9 +200,13 @@ public class LaserCannonEntity : MonoBehaviour
         if (state != LaserCannonState.Normal) return;
         if (other.CompareTag("Player") && damageCD <= 0)
         {
+            var hitPos = new Vector3(transform.position.x, other.transform.position.y, other.transform.position.z);
+            var hitDir = (other.transform.position - hitPos).normalized;
             var role = other.GetComponent<RoleEntity>();
-            role.Behit(damage);
-            damageCD = 1;
+            if (role.Behit(damage, hitDir))
+            {
+                damageCD = 1;
+            }
         }
     }
 }
