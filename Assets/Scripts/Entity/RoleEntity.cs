@@ -55,7 +55,6 @@ public class RoleEntity : MonoBehaviour
         }
         else
         {
-            Debug.Log("LimitMove");
             transform.position = fixPos;
             rb.velocity = new Vector2(0, rb.velocity.y);
         }
@@ -115,6 +114,15 @@ public class RoleEntity : MonoBehaviour
         else
         {
             Move(Vector2.zero);
+        }
+    }
+
+    public void Behit(int damage)
+    {
+        hp -= damage;
+        if (hp <= 0)
+        {
+            hp = 0;
         }
     }
 }
