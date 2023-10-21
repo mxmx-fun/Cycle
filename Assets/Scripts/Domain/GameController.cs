@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class GameController : MonoBehaviour
     public GameObject groundSpikePrefab;
 
     public GameObject supplyPrefab;
+
+    public GameObject tipPrefab;
+    public Transform tipRoot;
 
     public EvadeCombo evade;
     public Cycle cycle;
@@ -30,6 +34,7 @@ public class GameController : MonoBehaviour
         LaserCannonPrefab = Resources.Load<GameObject>("Prefab/Barrier/LaserCannon");
         groundSpikePrefab = Resources.Load<GameObject>("Prefab/Barrier/GroundSpike");
         supplyPrefab = Resources.Load<GameObject>("Prefab/Supply/RandomItem");
+        tipPrefab = Resources.Load<GameObject>("Prefab/UI/TipEntity");
         barrierFactory = new BarrierFactory(spikePrefab, LaserCannonPrefab, groundSpikePrefab);
         supplyFactory = new SupplyFactory(supplyPrefab);
     }
@@ -91,7 +96,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-        public void Apply_Hell()
+    public void Apply_Hell()
     {
         for (int i = 0; i < 2; i++)
         {
@@ -107,5 +112,10 @@ public class GameController : MonoBehaviour
         {
             barrierFactory.SpawnGround(CycleState.Hell);
         }
+    }
+
+    public void Tip(string text) {
+        GameObject tip = Instantiate(tipPrefab,tipRoot);
+        tip.GetComponent<TipEntity>().Ctor(text);
     }
 }

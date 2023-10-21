@@ -868,7 +868,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1280481bd87e2cf499f53cb8b4fb2471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 1
+  state: 5
   timeBar: {fileID: 1151418412}
   stateText: {fileID: 1815918331}
   teachText: {fileID: 915808753}
@@ -1835,5 +1835,7 @@ MonoBehaviour:
   LaserCannonPrefab: {fileID: 0}
   groundSpikePrefab: {fileID: 0}
   supplyPrefab: {fileID: 4791270786571955917, guid: 80bf76dd027e26d41872e656d4f31fd6, type: 3}
+  tipPrefab: {fileID: 0}
+  tipRoot: {fileID: 814416596}
   evade: {fileID: 1048620586}
   cycle: {fileID: 905556135}

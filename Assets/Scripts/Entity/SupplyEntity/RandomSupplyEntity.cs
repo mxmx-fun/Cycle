@@ -198,10 +198,12 @@ public class RandomSupplyEntity : MonoBehaviour
             if (seed > 20)
             {
                 GetHpReward(10, playerCom);
+                GameController.Instance.Tip("获得10点生命");
             }
             else
             {
                 GetShieldReward(10, playerCom);
+                GameController.Instance.Tip("获得10点护盾");
             }
         }
         else if (level < 6)
@@ -210,14 +212,17 @@ public class RandomSupplyEntity : MonoBehaviour
             if (seed > 50)
             {
                 GetHpReward(50, playerCom);
+                GameController.Instance.Tip("获得50点生命");
             }
             else if (seed > 20)
             {
                 GetShieldReward(50, playerCom);
+                GameController.Instance.Tip("获得50点护盾");
             }
             else
             {
                 UpgradeJump(playerCom);
+                GameController.Instance.Tip("跳跃最大次数+1");
             }
         }
         else if (level < 10)

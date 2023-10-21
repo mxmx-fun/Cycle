@@ -226,14 +226,14 @@ public class SpikeEntity : MonoBehaviour
     // Trigger
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (state != SpikeState.Normal || !other.CompareTag("Player")) return;
+        if (state != SpikeState.Normal) return;
         if (other.CompareTag("Player"))
         {
             var hitDir = (other.transform.position - transform.position).normalized;
             var role = other.GetComponent<RoleEntity>();
             role.Behit(damage, hitDir);
+            isHit = true;
         }
-        isHit = true;
         ApplyState(SpikeState.Dead);
     }
 }
