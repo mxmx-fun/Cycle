@@ -11,19 +11,22 @@ public enum CycleState
     Normal,
     Hard,
     Hell,
-    Finish
+    Finish,
+    Over,
 }
 
 public class Cycle : MonoBehaviour
 {
-    CycleState state;
+    public CycleState state;
     public Image timeBar;
     public Text stateText;
 
     public Text teachText;
+    public Text tipText;
     bool isEnter;
     float time;
     float durationTime;
+    float spawnCD;
 
     //FSM
     // * Teach
@@ -32,7 +35,7 @@ public class Cycle : MonoBehaviour
 
     public void Awake()
     {
-        Apply_State(CycleState.Teach);
+        Apply_State(state);
     }
 
     public void Apply_State(CycleState state)
@@ -53,6 +56,9 @@ public class Cycle : MonoBehaviour
                 break;
             case CycleState.Hell:
                 _Enter_Hell();
+                break;
+            case CycleState.Over:
+                _Enter_Over();
                 break;
         }
     }
@@ -87,6 +93,12 @@ public class Cycle : MonoBehaviour
         isEnter = true;
     }
 
+    void _Enter_Over()
+    {
+        state = CycleState.Over;
+        isEnter = true;
+    }
+
     public void Tick_State(float dt)
     {
         switch (state)
@@ -106,7 +118,17 @@ public class Cycle : MonoBehaviour
             case CycleState.Hell:
                 _Tick_Hell(dt);
                 break;
+            case CycleState.Over:
+                GameOver();
+                break;
         }
+    }
+
+    void GameOver()
+    {
+        tipText.gameObject.SetActive(true);
+        tipText.text = "Game Over!";
+        Time.timeScale = 0;
     }
 
     void _Tick_Teach(float dt)
@@ -183,6 +205,16 @@ public class Cycle : MonoBehaviour
             stateText.text = "简单阶段";
         }
 
+        if (spawnCD <= 0)
+        {
+            spawnCD = 5;
+            GameController.Instance.Apply_Easy();
+        }
+        else
+        {
+            spawnCD -= dt;
+        }
+
         if (time < durationTime)
         {
             time += dt;
@@ -202,6 +234,16 @@ public class Cycle : MonoBehaviour
             time = 0;
             durationTime = 20;
             stateText.text = "普通阶段";
+        }
+
+        if (spawnCD <= 0)
+        {
+            spawnCD = 4;
+            GameController.Instance.Apply_Normal();
+        }
+        else
+        {
+            spawnCD -= dt;
         }
 
         if (time < durationTime)
@@ -225,6 +267,16 @@ public class Cycle : MonoBehaviour
             stateText.text = "困难阶段";
         }
 
+        if (spawnCD <= 0)
+        {
+            spawnCD = 4;
+            GameController.Instance.Apply_Hard();
+        }
+        else
+        {
+            spawnCD -= dt;
+        }
+
         if (time < durationTime)
         {
             time += dt;
@@ -245,6 +297,17 @@ public class Cycle : MonoBehaviour
             durationTime = 30;
             stateText.text = "地狱阶段";
         }
+
+        if (spawnCD <= 0)
+        {
+            spawnCD = 4;
+            GameController.Instance.Apply_Hell();
+        }
+        else
+        {
+            spawnCD -= dt;
+        }
+
 
         if (time < durationTime)
         {

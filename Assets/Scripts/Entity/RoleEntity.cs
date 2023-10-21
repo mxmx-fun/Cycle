@@ -117,18 +117,13 @@ public class RoleEntity : MonoBehaviour
 
     public void Move(Vector2 dir)
     {
-        if (CheckMove(out var fixPos))
+        if (CheckPos(out var fixPos))
         {
             rb.velocity = dir * moveSpeed + new Vector2(0, rb.velocity.y);
         }
-        else
-        {
-            transform.position = fixPos;
-            rb.velocity = new Vector2(0, rb.velocity.y);
-        }
     }
 
-    bool CheckMove(out Vector2 fixPos)
+    bool CheckPos(out Vector2 fixPos)
     {
         var pos = transform.position;
         var scale = size.x / 2;
@@ -296,6 +291,7 @@ public class RoleEntity : MonoBehaviour
         if (isEnter)
         {
             isEnter = false;
+            GameController.Instance.GameOver();
         }
 
     }
@@ -321,6 +317,11 @@ public class RoleEntity : MonoBehaviour
     public void Update()
     {
         Apply_Tick(Time.deltaTime);
+        if (!CheckPos(out Vector2 fixPos))
+        {
+            rb.velocity = -rb.velocity;
+            transform.position = fixPos;
+        }
     }
 
     public void UpdateColor()
@@ -348,7 +349,7 @@ public class RoleEntity : MonoBehaviour
 
     public void UpdateTxt()
     {
-        if(state == RoleState.Stun) return;
+        if (state == RoleState.Stun) return;
 
         if (shield > 0)
         {

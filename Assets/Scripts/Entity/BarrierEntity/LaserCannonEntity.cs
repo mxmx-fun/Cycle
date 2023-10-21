@@ -59,6 +59,9 @@ public class LaserCannonEntity : MonoBehaviour
 
     public void Ctor(CycleState state)
     {
+        var x = Random.Range(-9, 9);
+        float y = 4.75f;
+        this.transform.position = new Vector3(x, y, 0);
         switch (state)
         {
             case CycleState.Normal:
