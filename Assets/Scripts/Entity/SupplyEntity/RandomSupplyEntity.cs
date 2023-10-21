@@ -198,12 +198,12 @@ public class RandomSupplyEntity : MonoBehaviour
             if (seed > 20)
             {
                 GetHpReward(10, playerCom);
-                GameController.Instance.Tip("获得10点生命");
+                GameController.Instance.CreateTip("获得10点生命");
             }
             else
             {
                 GetShieldReward(10, playerCom);
-                GameController.Instance.Tip("获得10点护盾");
+                GameController.Instance.CreateTip("获得10点护盾");
             }
         }
         else if (level < 4)
@@ -212,17 +212,17 @@ public class RandomSupplyEntity : MonoBehaviour
             if (seed > 50)
             {
                 GetHpReward(50, playerCom);
-                GameController.Instance.Tip("获得50点生命");
+                GameController.Instance.CreateTip("获得50点生命");
             }
             else if (seed > 20)
             {
                 GetShieldReward(50, playerCom);
-                GameController.Instance.Tip("获得50点护盾");
+                GameController.Instance.CreateTip("获得50点护盾");
             }
             else
             {
                 UpgradeJump(playerCom);
-                GameController.Instance.Tip("跳跃最大次数+1");
+                GameController.Instance.CreateTip("跳跃最大次数+1");
             }
         }
         else if (level < 6)
@@ -233,30 +233,30 @@ public class RandomSupplyEntity : MonoBehaviour
                 if (playerCom.hp == playerCom.maxHp)
                 {
                     GetShieldReward(playerCom.maxShield, playerCom);
-                    GameController.Instance.Tip("增加满护盾！");
+                    GameController.Instance.CreateTip("增加满护盾！");
                 }
                 else
                 {
                     GetHpReward(playerCom.maxHp, playerCom);
-                    GameController.Instance.Tip("恢复全部生命！");
+                    GameController.Instance.CreateTip("恢复全部生命！");
                 }
             }
             else if (seed > 50)
             {
                 GetShieldReward(playerCom.maxShield, playerCom);
-                GameController.Instance.Tip("增加满护盾！");
+                GameController.Instance.CreateTip("增加满护盾！");
             }
             else if (seed > 15)
             {
                 playerCom.InvincibleDurationTime += 1;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间1s！");
+                GameController.Instance.CreateTip("获得无敌时间1s！");
             }
             else
             {
                 playerCom.InvincibleDurationTime += 3;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间3s！");
+                GameController.Instance.CreateTip("获得无敌时间3s！");
             }
         }
         else if (level < 8)
@@ -265,24 +265,24 @@ public class RandomSupplyEntity : MonoBehaviour
             if (seed > 75)
             {
                 ExpandMaxHp(25, playerCom);
-                GameController.Instance.Tip("最大生命+25！");
+                GameController.Instance.CreateTip("最大生命+25！");
             }
             else if (seed > 50)
             {
                 ExpandMaxHp(50, playerCom);
-                GameController.Instance.Tip("最大生命+50！");
+                GameController.Instance.CreateTip("最大生命+50！");
             }
             else if (seed > 15)
             {
                 playerCom.InvincibleDurationTime += 1;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间1s！");
+                GameController.Instance.CreateTip("获得无敌时间1s！");
             }
             else
             {
                 playerCom.InvincibleDurationTime += 3;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间3s！");
+                GameController.Instance.CreateTip("获得无敌时间3s！");
             }
         }
         else if (level < 10)
@@ -292,25 +292,25 @@ public class RandomSupplyEntity : MonoBehaviour
             {
                 playerCom.InvincibleDurationTime += 1;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间1s！");
+                GameController.Instance.CreateTip("获得无敌时间1s！");
             }
             else if (seed > 40)
             {
                 playerCom.InvincibleDurationTime += 2;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间2s！");
+                GameController.Instance.CreateTip("获得无敌时间2s！");
             }
             else if (seed > 15)
             {
                 playerCom.InvincibleDurationTime += 3;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间3s！");
+                GameController.Instance.CreateTip("获得无敌时间3s！");
             }
             else
             {
                 playerCom.InvincibleDurationTime += 5;
                 playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.Tip("获得无敌时间5s！");
+                GameController.Instance.CreateTip("获得无敌时间5s！");
             }
         }
     }

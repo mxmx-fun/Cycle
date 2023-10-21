@@ -766,9 +766,14 @@ MonoBehaviour:
   maxShield: 0
   state: 0
   isInvincible: 0
+  InvincibleDurationTime: 0
   moveSpeed: 0
   moveXRange: {x: 0, y: 0}
+  jumpTime: 0
   maxJumpTime: 1
+  canEvade: 1
+  evadeDis: 0
+  evadeCD: 0.1
 --- !u!61 &877298512
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1835,6 +1840,7 @@ MonoBehaviour:
   LaserCannonPrefab: {fileID: 0}
   groundSpikePrefab: {fileID: 0}
   supplyPrefab: {fileID: 4791270786571955917, guid: 80bf76dd027e26d41872e656d4f31fd6, type: 3}
+  phantomPrefab: {fileID: 0}
   tipPrefab: {fileID: 0}
   tipRoot: {fileID: 814416596}
   evade: {fileID: 1048620586}

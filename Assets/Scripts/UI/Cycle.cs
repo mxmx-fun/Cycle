@@ -60,6 +60,9 @@ public class Cycle : MonoBehaviour
             case CycleState.Over:
                 _Enter_Over();
                 break;
+            case CycleState.Finish:
+                _Enter_Over();
+                break;
         }
     }
 
@@ -99,6 +102,12 @@ public class Cycle : MonoBehaviour
         isEnter = true;
     }
 
+    void _Enter_Finish()
+    {
+        state = CycleState.Finish;
+        isEnter = true;
+    }
+
     public void Tick_State(float dt)
     {
         switch (state)
@@ -121,6 +130,9 @@ public class Cycle : MonoBehaviour
             case CycleState.Over:
                 GameOver();
                 break;
+            case CycleState.Finish:
+                Victory();
+                break;
         }
     }
 
@@ -128,6 +140,13 @@ public class Cycle : MonoBehaviour
     {
         tipText.gameObject.SetActive(true);
         tipText.text = "Game Over!";
+        Time.timeScale = 0;
+    }
+
+    void Victory()
+    {
+        tipText.gameObject.SetActive(true);
+        tipText.text = "Victory!";
         Time.timeScale = 0;
     }
 

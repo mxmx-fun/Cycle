@@ -33,7 +33,7 @@ public class LaserCannonEntity : MonoBehaviour
     public float moveSpeed;
     Vector2 moveDir;
     public bool isTrack;
-    public float trackCD;
+    public bool alwaysTrack;
     float damageCD;
 
 
@@ -70,23 +70,23 @@ public class LaserCannonEntity : MonoBehaviour
                 isTrack = false;
                 ctorTime = 3f;
                 damage = 5;
-                lifeTime = 5;
+                lifeTime = 3;
                 break;
             case CycleState.Hard:
                 isMove = true;
                 moveSpeed = 0.7f;
-                isTrack = true;
-                ctorTime = 3f;
+                ctorTime = 2.5f;
                 damage = 5;
-                lifeTime = 5;
+                lifeTime = 3.5F;
                 break;
             case CycleState.Hell:
                 isMove = true;
-                moveSpeed = 1f;
+                moveSpeed = 0.7f;
                 isTrack = true;
-                ctorTime = 3f;
+                alwaysTrack = true;
+                ctorTime = 2f;
                 damage = 5;
-                lifeTime = 5;
+                lifeTime = 4;
                 break;
             default:
                 break;
@@ -191,6 +191,9 @@ public class LaserCannonEntity : MonoBehaviour
             {
                 if (isTrack)
                 {
+                    if(!alwaysTrack) {
+                        isTrack = false;
+                    }
                     var targetPos = new Vector3(player.transform.position.x, transform.position.y, transform.position.z);
                     //TODO：追踪慢慢变快，慢慢旋转
                     moveDir = (targetPos - transform.position).normalized;

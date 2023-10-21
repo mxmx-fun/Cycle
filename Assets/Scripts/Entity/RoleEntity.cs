@@ -26,6 +26,8 @@ public class RoleEntity : MonoBehaviour
     public int shield;
     public int maxShield;
     public RoleState state;
+    Vector3 faceDir;
+    bool curMove;
     Vector2 size;
 
     public bool isInvincible;
@@ -44,12 +46,18 @@ public class RoleEntity : MonoBehaviour
     public int maxJumpTime;
     float jumpForce;
 
+    // * Evade
+    public bool canEvade;
+    public float evadeDis;
+    public float evadeCD;
+
     // FSM
     bool isEnter = false;
 
     // TEMP
     float time;
     float durationTime;
+    float evadeCDTime;
 
 
     //Init
@@ -63,6 +71,7 @@ public class RoleEntity : MonoBehaviour
         shield = 0;
         hp = maxHp;
         moveSpeed = 5;
+        evadeDis = 2;
         jumpForce = 5;
         jumpTime = maxJumpTime;
         moveXRange = new Vector2(-9.7F, 9.7F);
@@ -246,6 +255,11 @@ public class RoleEntity : MonoBehaviour
         {
             isEnter = false;
         }
+        InputActino();
+    }
+
+    void InputActino()
+    {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
@@ -254,14 +268,29 @@ public class RoleEntity : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             Move(Vector2.left);
+            faceDir = Vector3.left;
+            curMove = true;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             Move(Vector2.right);
+            faceDir = Vector3.right;
+            curMove = true;
         }
         else
         {
             Move(Vector2.zero);
+            curMove = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (canEvade && evadeCDTime != 0) return;
+            var originPos = transform.position;
+            var targetPos = transform.position + faceDir * evadeDis;
+            transform.position = targetPos;
+            GameController.Instance.CreatePhantom(originPos, transform.position);
+            evadeCDTime = evadeCD;
         }
     }
 
@@ -312,23 +341,7 @@ public class RoleEntity : MonoBehaviour
             isEnter = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            Move(Vector2.left);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            Move(Vector2.right);
-        }
-        else
-        {
-            Move(Vector2.zero);
-        }
+        InputActino();
 
         if (InvincibleDurationTime > 0)
         {
@@ -350,8 +363,8 @@ public class RoleEntity : MonoBehaviour
             isEnter = false;
             GameController.Instance.GameOver();
         }
-
     }
+
     #endregion
     //Collision
     public void OnCollisionEnter2D(Collision2D collision)
@@ -378,6 +391,14 @@ public class RoleEntity : MonoBehaviour
         {
             rb.velocity = -rb.velocity;
             transform.position = fixPos;
+        }
+        if (evadeCDTime > 0)
+        {
+            evadeCDTime -= Time.deltaTime;
+        }
+        else
+        {
+            evadeCDTime = 0;
         }
     }
 

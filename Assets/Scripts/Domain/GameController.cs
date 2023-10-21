@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour
 
     public GameObject supplyPrefab;
 
+    public GameObject phantomPrefab;
+
     public GameObject tipPrefab;
     public Transform tipRoot;
 
@@ -35,6 +37,7 @@ public class GameController : MonoBehaviour
         groundSpikePrefab = Resources.Load<GameObject>("Prefab/Barrier/GroundSpike");
         supplyPrefab = Resources.Load<GameObject>("Prefab/Supply/RandomItem");
         tipPrefab = Resources.Load<GameObject>("Prefab/UI/TipEntity");
+        phantomPrefab = Resources.Load<GameObject>("Prefab/Role/RolePhantom");
         barrierFactory = new BarrierFactory(spikePrefab, LaserCannonPrefab, groundSpikePrefab);
         supplyFactory = new SupplyFactory(supplyPrefab);
     }
@@ -53,7 +56,12 @@ public class GameController : MonoBehaviour
 
     public void Apply_Easy_Single()
     {
-        barrierFactory.SpawnSpike(CycleState.Easy);
+        int num;
+        num = Random.Range(1, 5);
+        for (int i = 0; i < num; i++)
+        {
+            barrierFactory.SpawnSpike(CycleState.Easy);
+        }
     }
 
     public void Apply_Normal_Group()
@@ -115,16 +123,50 @@ public class GameController : MonoBehaviour
         {
             barrierFactory.SpawnLaserCannon(CycleState.Hell);
         }
-        
+
         for (int i = 0; i < 1; i++)
         {
             barrierFactory.SpawnGround(CycleState.Hell);
         }
     }
 
-    public void Tip(string text)
+    public void CreateTip(string text)
     {
         GameObject tip = Instantiate(tipPrefab, tipRoot);
         tip.GetComponent<TipEntity>().Ctor(text);
+    }
+
+    public void CreatePhantom(Vector3 originPos, Vector3 targetPos)
+    {
+        List<phantomEntity> phantoms = new List<phantomEntity>();
+        var head = Instantiate(phantomPrefab);
+        head.transform.position = originPos;
+        phantoms.Add(head.GetComponent<phantomEntity>());
+        var offset = targetPos - originPos;
+        var offsetNorm = offset / 5;
+        phantomEntity pt = null;
+        for (int i = 0; i < 5; i++)
+        {
+            var phantom = Instantiate(phantomPrefab);
+            phantom.transform.position = originPos + offsetNorm * (i + 1);
+            if (pt != null)
+            {
+                var phantomCom = phantom.GetComponent<phantomEntity>();
+                phantomCom.parent = pt;
+                phantoms.Add(phantomCom);
+                pt = phantomCom;
+            }
+            else
+            {
+                var phantomCom = phantom.GetComponent<phantomEntity>();
+                phantomCom.parent = head.GetComponent<phantomEntity>();
+                phantoms.Add(phantomCom);
+                pt = phantomCom;
+            }
+        }
+        foreach (var phantom in phantoms)
+        {
+            phantom.Ctor(0.1f);
+        }
     }
 }
