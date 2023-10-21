@@ -222,7 +222,6 @@ public class RandomSupplyEntity : MonoBehaviour
             else
             {
                 UpgradeJump(playerCom);
-                GameController.Instance.CreateTip("跳跃最大次数+1");
             }
         }
         else if (level < 6)
@@ -248,9 +247,7 @@ public class RandomSupplyEntity : MonoBehaviour
             }
             else if (seed > 15)
             {
-                playerCom.InvincibleDurationTime += 1;
-                playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.CreateTip("获得无敌时间1s！");
+                UpgradeJump(playerCom);
             }
             else
             {
@@ -269,14 +266,20 @@ public class RandomSupplyEntity : MonoBehaviour
             }
             else if (seed > 50)
             {
-                ExpandMaxHp(50, playerCom);
-                GameController.Instance.CreateTip("最大生命+50！");
+                if (playerCom.hp == playerCom.maxHp)
+                {
+                    GetShieldReward(playerCom.maxShield, playerCom);
+                    GameController.Instance.CreateTip("增加满护盾！");
+                }
+                else
+                {
+                    GetHpReward(playerCom.maxHp, playerCom);
+                    GameController.Instance.CreateTip("恢复全部生命！");
+                }
             }
             else if (seed > 15)
             {
-                playerCom.InvincibleDurationTime += 1;
-                playerCom.ApplyState(RoleState.Invincible);
-                GameController.Instance.CreateTip("获得无敌时间1s！");
+                UpgradeJump(playerCom);
             }
             else
             {
@@ -362,11 +365,43 @@ public class RandomSupplyEntity : MonoBehaviour
         {
             player.jumpTime += 1;
             player.maxJumpTime += 1;
+            GameController.Instance.CreateTip("跳跃最大次数+1");
         }
         else
         {
-            GetHpReward(player.maxHp, player);
+            UpgradeEvade(player);
         }
+    }
+
+    public void UpgradeEvade(RoleEntity player)
+    {
+        if (!player.canEvade)
+        {
+            player.canEvade = true;
+            GameController.Instance.CreateTip("学会闪避！按Q键闪避！CD:5s！");
+            return;
+        }
+
+        if (player.evadeCD > 2)
+        {
+            player.evadeCD -= 1;
+            GameController.Instance.CreateTip($"闪避升级！CD:{player.evadeCD}s！");
+            return;
+        }
+        else
+        {
+            if (player.hp == player.maxHp)
+            {
+                GetShieldReward(player.maxShield, player);
+                GameController.Instance.CreateTip("增加满护盾！");
+            }
+            else
+            {
+                GetHpReward(player.maxHp, player);
+                GameController.Instance.CreateTip("恢复全部生命！");
+            }
+        }
+
     }
 
 }

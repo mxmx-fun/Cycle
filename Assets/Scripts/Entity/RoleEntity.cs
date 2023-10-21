@@ -285,7 +285,7 @@ public class RoleEntity : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (canEvade && evadeCDTime != 0) return;
+            if (!canEvade || evadeCDTime != 0) return;
             var originPos = transform.position;
             var targetPos = transform.position + faceDir * evadeDis;
             transform.position = targetPos;
@@ -404,6 +404,7 @@ public class RoleEntity : MonoBehaviour
 
     public void UpdateColor()
     {
+        if (state == RoleState.Stun || state == RoleState.Invincible) return;
         if (shield > 0)
         {
             sr.color = Color.blue;

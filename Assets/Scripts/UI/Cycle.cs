@@ -61,7 +61,7 @@ public class Cycle : MonoBehaviour
                 _Enter_Over();
                 break;
             case CycleState.Finish:
-                _Enter_Over();
+                _Enter_Finish();
                 break;
         }
     }

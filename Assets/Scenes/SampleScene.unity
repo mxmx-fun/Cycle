@@ -771,9 +771,9 @@ MonoBehaviour:
   moveXRange: {x: 0, y: 0}
   jumpTime: 0
   maxJumpTime: 1
-  canEvade: 1
+  canEvade: 0
   evadeDis: 0
-  evadeCD: 0.1
+  evadeCD: 5
 --- !u!61 &877298512
 BoxCollider2D:
   m_ObjectHideFlags: 0
