@@ -51,46 +51,51 @@ public class GameController : MonoBehaviour
         cycle.Apply_State(CycleState.Over);
     }
 
-    public void Apply_Easy()
+    public void Apply_Easy_Single()
     {
-        for (int i = 0; i < 5; i++)
-        {
-            barrierFactory.SpawnSpike(CycleState.Easy);
-        }
+        barrierFactory.SpawnSpike(CycleState.Easy);
     }
 
-    public void Apply_Normal()
+    public void Apply_Normal_Group()
     {
-        for (int i = 0; i < 8; i++)
+        int num;
+        num = Random.Range(3, 5);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnSpike(CycleState.Normal);
         }
 
-        for (int i = 0; i < 2; i++)
+        num = Random.Range(1, 3);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnLaserCannon(CycleState.Normal);
         }
     }
 
 
-    public void Apply_Hard()
+    public void Apply_Hard_Group()
     {
-        for (int i = 0; i < 8; i++)
+        int num;
+        num = Random.Range(5, 8);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnSpike(CycleState.Normal);
         }
 
-        for (int i = 0; i < 1; i++)
+        num = Random.Range(1, 2);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnSpike(CycleState.Hard);
         }
 
-        for (int i = 0; i < 2; i++)
+        num = Random.Range(1, 2);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnLaserCannon(CycleState.Hard);
         }
 
-        for (int i = 0; i < 1; i++)
+        num = Random.Range(1, 3);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnGround(CycleState.Hard);
         }
@@ -98,24 +103,28 @@ public class GameController : MonoBehaviour
 
     public void Apply_Hell()
     {
-        for (int i = 0; i < 2; i++)
+        int num;
+        num = Random.Range(3, 5);
+        for (int i = 0; i < num; i++)
         {
             barrierFactory.SpawnSpike(CycleState.Hell);
         }
 
+        num = Random.Range(1, 3);
         for (int i = 0; i < 3; i++)
         {
             barrierFactory.SpawnLaserCannon(CycleState.Hell);
         }
-
+        
         for (int i = 0; i < 1; i++)
         {
             barrierFactory.SpawnGround(CycleState.Hell);
         }
     }
 
-    public void Tip(string text) {
-        GameObject tip = Instantiate(tipPrefab,tipRoot);
+    public void Tip(string text)
+    {
+        GameObject tip = Instantiate(tipPrefab, tipRoot);
         tip.GetComponent<TipEntity>().Ctor(text);
     }
 }

@@ -53,7 +53,7 @@ public class RandomSupplyEntity : MonoBehaviour
         int lv = (int)level * 2;
         this.level = lv;
         this.transform.localScale = size + new Vector2(lv * 0.1f, lv * 0.1f);
-        var x = Random.Range(-5,5);
+        var x = Random.Range(-5, 5);
         float y = 4.75f;
         this.transform.position = new Vector3(x, y, 0);
     }
@@ -192,7 +192,7 @@ public class RandomSupplyEntity : MonoBehaviour
     public void GetRandomReward(GameObject player)
     {
         var playerCom = player.GetComponent<RoleEntity>();
-        if (level < 3)
+        if (level < 2)
         {
             int seed = Random.Range(0, 100);
             if (seed > 20)
@@ -206,7 +206,7 @@ public class RandomSupplyEntity : MonoBehaviour
                 GameController.Instance.Tip("获得10点护盾");
             }
         }
-        else if (level < 6)
+        else if (level < 4)
         {
             int seed = Random.Range(0, 100);
             if (seed > 50)
@@ -225,9 +225,93 @@ public class RandomSupplyEntity : MonoBehaviour
                 GameController.Instance.Tip("跳跃最大次数+1");
             }
         }
+        else if (level < 6)
+        {
+            int seed = Random.Range(0, 100);
+            if (seed > 75)
+            {
+                if (playerCom.hp == playerCom.maxHp)
+                {
+                    GetShieldReward(playerCom.maxShield, playerCom);
+                    GameController.Instance.Tip("增加满护盾！");
+                }
+                else
+                {
+                    GetHpReward(playerCom.maxHp, playerCom);
+                    GameController.Instance.Tip("恢复全部生命！");
+                }
+            }
+            else if (seed > 50)
+            {
+                GetShieldReward(playerCom.maxShield, playerCom);
+                GameController.Instance.Tip("增加满护盾！");
+            }
+            else if (seed > 15)
+            {
+                playerCom.InvincibleDurationTime += 1;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间1s！");
+            }
+            else
+            {
+                playerCom.InvincibleDurationTime += 3;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间3s！");
+            }
+        }
+        else if (level < 8)
+        {
+            int seed = Random.Range(0, 100);
+            if (seed > 75)
+            {
+                ExpandMaxHp(25, playerCom);
+                GameController.Instance.Tip("最大生命+25！");
+            }
+            else if (seed > 50)
+            {
+                ExpandMaxHp(50, playerCom);
+                GameController.Instance.Tip("最大生命+50！");
+            }
+            else if (seed > 15)
+            {
+                playerCom.InvincibleDurationTime += 1;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间1s！");
+            }
+            else
+            {
+                playerCom.InvincibleDurationTime += 3;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间3s！");
+            }
+        }
         else if (level < 10)
         {
-
+            int seed = Random.Range(0, 100);
+            if (seed > 65)
+            {
+                playerCom.InvincibleDurationTime += 1;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间1s！");
+            }
+            else if (seed > 40)
+            {
+                playerCom.InvincibleDurationTime += 2;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间2s！");
+            }
+            else if (seed > 15)
+            {
+                playerCom.InvincibleDurationTime += 3;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间3s！");
+            }
+            else
+            {
+                playerCom.InvincibleDurationTime += 5;
+                playerCom.ApplyState(RoleState.Invincible);
+                GameController.Instance.Tip("获得无敌时间5s！");
+            }
         }
     }
 
@@ -236,6 +320,8 @@ public class RandomSupplyEntity : MonoBehaviour
         if (player.hp + count > player.maxHp)
         {
             player.hp = player.maxHp;
+            player.UpdateTxt();
+            player.UpdateColor();
             return;
         }
         else
@@ -246,11 +332,20 @@ public class RandomSupplyEntity : MonoBehaviour
         player.UpdateColor();
     }
 
+    public void ExpandMaxHp(int count, RoleEntity player)
+    {
+        player.maxHp += count;
+        player.UpdateTxt();
+        player.UpdateColor();
+    }
+
     public void GetShieldReward(int count, RoleEntity player)
     {
         if (player.shield + count > player.maxShield)
         {
             player.shield = player.maxShield;
+            player.UpdateTxt();
+            player.UpdateColor();
             return;
         }
         else
@@ -265,6 +360,7 @@ public class RandomSupplyEntity : MonoBehaviour
     {
         if (player.maxJumpTime < 3)
         {
+            player.jumpTime += 1;
             player.maxJumpTime += 1;
         }
         else

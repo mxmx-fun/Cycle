@@ -172,7 +172,7 @@ public class Cycle : MonoBehaviour
                 durationTime = 5;
                 timeBar.fillAmount += 0.25f;
             }
-            teachText.text = "角色身上的数值代表<b>Hp</b>，当<b>Hp</b>为0时，游戏结束。\n不同的角色颜色代表不同信息\n<b><color=green>绿色</color></b>代表健康，<b><color=yellow>黄色</color></b>代表正常，<b><color=red>红色</color></b>则表示危险。\n当角色变为<b><color=blue>蓝色</color></b>则代表此时有护盾，数字则代表护盾值。\n护盾优先抵抗伤害，且受击不会被击退";
+            teachText.text = "数值：<b>生命值或护盾值</b>，当<b>Hp</b>为0时，游戏结束。\n不同的角色颜色代表不同信息\n<b><color=green>绿色</color></b>：健康，<b><color=yellow>黄色</color></b>：正常。\n<b><color=cyan>青色</color></b>：无敌，<b><color=red>红色</color></b>：生命垂危。\n<b><color=blue>蓝色</color></b>：护盾，霸体,挡伤。";
         }
 
         if (timeBar.fillAmount == 0.75f)
@@ -207,8 +207,8 @@ public class Cycle : MonoBehaviour
 
         if (spawnCD <= 0)
         {
-            spawnCD = 5;
-            GameController.Instance.Apply_Easy();
+            spawnCD = 1;
+            GameController.Instance.Apply_Easy_Single();
         }
         else
         {
@@ -238,8 +238,8 @@ public class Cycle : MonoBehaviour
 
         if (spawnCD <= 0)
         {
-            spawnCD = 4;
-            GameController.Instance.Apply_Normal();
+            spawnCD = 3;
+            GameController.Instance.Apply_Normal_Group();
         }
         else
         {
@@ -269,8 +269,8 @@ public class Cycle : MonoBehaviour
 
         if (spawnCD <= 0)
         {
-            spawnCD = 4;
-            GameController.Instance.Apply_Hard();
+            spawnCD = 3;
+            GameController.Instance.Apply_Hard_Group();
         }
         else
         {
@@ -300,7 +300,7 @@ public class Cycle : MonoBehaviour
 
         if (spawnCD <= 0)
         {
-            spawnCD = 4;
+            spawnCD = 2;
             GameController.Instance.Apply_Hell();
         }
         else

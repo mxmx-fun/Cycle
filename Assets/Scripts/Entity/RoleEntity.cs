@@ -9,6 +9,7 @@ public enum RoleState
     Normal,
     Behit,
     Stun,
+    Invincible,
     Dead
 }
 
@@ -26,7 +27,9 @@ public class RoleEntity : MonoBehaviour
     public int maxShield;
     public RoleState state;
     Vector2 size;
+
     public bool isInvincible;
+    public float InvincibleDurationTime;
 
 
     //Ability
@@ -37,7 +40,7 @@ public class RoleEntity : MonoBehaviour
 
     // * Jump
     bool inGround;
-    int jumpTime;
+    public int jumpTime;
     public int maxJumpTime;
     float jumpForce;
 
@@ -80,6 +83,9 @@ public class RoleEntity : MonoBehaviour
             case RoleState.Stun:
                 EnterStun();
                 break;
+            case RoleState.Invincible:
+                EnterInvincible();
+                break;
             case RoleState.Dead:
                 EnterDead();
                 break;
@@ -98,6 +104,9 @@ public class RoleEntity : MonoBehaviour
                 break;
             case RoleState.Stun:
                 _Tick_Stun(dt);
+                break;
+            case RoleState.Invincible:
+                _Tick_Invincible(dt);
                 break;
             case RoleState.Dead:
                 _Tick_Dead(dt);
@@ -196,6 +205,15 @@ public class RoleEntity : MonoBehaviour
         isEnter = true;
     }
 
+    public void EnterInvincible()
+    {
+        if (state == RoleState.Invincible) return;
+        state = RoleState.Invincible;
+        roleTxt.text = "无敌中";
+        sr.color = Color.cyan;
+        isEnter = true;
+    }
+
     public void EnterBehit()
     {
         if (state == RoleState.Behit) return;
@@ -209,7 +227,7 @@ public class RoleEntity : MonoBehaviour
     {
         if (state == RoleState.Stun) return;
         state = RoleState.Stun;
-        roleTxt.text = "Stun";
+        roleTxt.text = "晕眩中";
         sr.color = Color.grey;
         isEnter = true;
     }
@@ -286,6 +304,45 @@ public class RoleEntity : MonoBehaviour
         }
     }
 
+    void _Tick_Invincible(float dt)
+    {
+        if (isEnter)
+        {
+            isInvincible = true;
+            isEnter = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            Move(Vector2.left);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            Move(Vector2.right);
+        }
+        else
+        {
+            Move(Vector2.zero);
+        }
+
+        if (InvincibleDurationTime > 0)
+        {
+            InvincibleDurationTime -= dt;
+            return;
+        }
+        else
+        {
+            isInvincible = false;
+            InvincibleDurationTime = 0;
+            ApplyState(RoleState.Normal);
+        }
+    }
+
     void _Tick_Dead(float dt)
     {
         if (isEnter)
@@ -349,7 +406,7 @@ public class RoleEntity : MonoBehaviour
 
     public void UpdateTxt()
     {
-        if (state == RoleState.Stun) return;
+        if (state == RoleState.Stun || state == RoleState.Invincible) return;
 
         if (shield > 0)
         {

@@ -29,7 +29,7 @@ public class SpikeEntity : MonoBehaviour
     public float moveSpeed;
     Vector2 moveDir;
     public bool isTrack;
-    public float trackCD;
+    public bool alwaysTrack;
 
 
     //FSM
@@ -88,6 +88,7 @@ public class SpikeEntity : MonoBehaviour
             case CycleState.Hell:
                 moveSpeed = 5;
                 isTrack = true;
+                alwaysTrack = true;
                 ctorTime = 1f;
                 damage = 10;
                 lifeTime = 5;
@@ -189,6 +190,9 @@ public class SpikeEntity : MonoBehaviour
         {
             if (isTrack)
             {
+                if(!alwaysTrack) {
+                    isTrack = false;
+                }
                 var direction = (player.transform.position - transform.position).normalized;
                 transform.up = direction;
                 //TODO：追踪慢慢变快，慢慢旋转
