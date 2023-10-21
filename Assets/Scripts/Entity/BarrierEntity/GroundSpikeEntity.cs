@@ -15,6 +15,7 @@ public class GroundSpikeEntity : MonoBehaviour
     //Component
     Rigidbody2D rb;
     SpriteRenderer sr;
+    GameObject tipGO;
 
     //Attri
     public GroundSpikeState state;
@@ -49,6 +50,7 @@ public class GroundSpikeEntity : MonoBehaviour
     {
         rb = GetComponentInChildren<Rigidbody2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
+        tipGO = transform.Find("Canvas").Find("Tip").gameObject;
         color = sr.color;
         size = transform.localScale;
         player = GameObject.FindGameObjectWithTag("Player");
@@ -134,6 +136,7 @@ public class GroundSpikeEntity : MonoBehaviour
     {
         if (isEnter)
         {
+            tipGO.SetActive(true);
             damageCD = 0;
             transform.position = new Vector2(player.transform.position.x, groundY);
             time = 0;
@@ -153,6 +156,7 @@ public class GroundSpikeEntity : MonoBehaviour
         }
         else
         {
+            tipGO.SetActive(false);
             ApplyState(GroundSpikeState.Normal);
         }
     }
